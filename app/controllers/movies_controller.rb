@@ -17,6 +17,12 @@ class MoviesController < ApplicationController
     @movies = Movie.order(params[:sort_by])
     @sort = params[:sort_by]
     
+    #Part 2 Stuff
+    @all_ratings = ['G', 'PG', 'PG-13', 'R']
+    if params[:ratings].present?
+      @selected_rating = params[:ratings].keys
+      @movies = @movies.where(rating: @selected_rating)
+    end
     
   end
 

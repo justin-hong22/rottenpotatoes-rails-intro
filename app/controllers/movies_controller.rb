@@ -17,11 +17,27 @@ class MoviesController < ApplicationController
     @movies = Movie.order(params[:sort_by])
     @sort = params[:sort_by]
     
-    #Part 2 Stuff
+    #Part 2 and 3 Stuff
     @all_ratings = ['G', 'PG', 'PG-13', 'R']
+    update = false
     if params[:ratings].present?
       @selected_rating = params[:ratings].keys
       @movies = @movies.where(rating: @selected_rating)
+      session[:ratings] = params[:ratings]
+    elsif !session[:ratings].nil?
+      params[:ratings] = session[:ratings]
+      update = true
+    elsif params[:sort_by].present?
+      @sort = params[:sort_by]
+      @movies = @movies.order(@sort)
+      session[:sort_by] = params[:sort_by]
+    elsif !session[:sort_by].nil?
+      params[:sort_by] = session[:sort_by]
+      update = true
+    end
+    
+    if update
+     redirect_to movies_path(params.slice(:ratings, :sort_by))
     end
     
   end
